@@ -22,7 +22,7 @@ def btncmd():
 
   print("print from frist to third:", listbox.get(0,2))
 
-  #check the seleted list
+  #check the seleted list (Return index)
   print("selected one:", listbox.curselection())
 
 btn = Button(root, text="Click", command=btncmd)
