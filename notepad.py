@@ -1,9 +1,33 @@
+import os
 from tkinter import *
-from tkinter.filedialog import asksaveasfile
+# from tkinter.filedialog import asksaveasfile, askopenfilename
 
 root = Tk()
 root.title("Untitied -Windos notepad")
 root.geometry("640x480")
+
+
+filename= "my test.txt"
+
+def open_file():
+  if os.path.isfile(filename):
+    with open(filename, "r", encoding="utf8") as file:
+      txt.delete("1.0", END)
+      txt.insert(END, file.read())
+
+  # filename = askopenfilename(parent=root)
+  # f = open(filename)
+  # f.read()
+
+def save_file():
+  with open(filename, "w", encoding="utf8") as file:
+      file.write(txt.get("1.0", END))
+
+    # files = [('All Files', '*.*'), 
+    #         ('Python Files', '*.py'),
+    #         ('Text Document', '*.txt')]
+    # file = asksaveasfile(filetypes = files, defaultextension = files)
+
 
 def creat_new_file():
   print("Create new file")
@@ -13,17 +37,10 @@ menu = Menu(root)
 menu_file = Menu(menu, tearoff=0)
 
 menu_file.add_separator()
-menu_file.add_command(label="Open file...")
-
-
-def save():
-    files = [('All Files', '*.*'), 
-            ('Python Files', '*.py'),
-            ('Text Document', '*.txt')]
-    file = asksaveasfile(filetypes = files, defaultextension = files)
+menu_file.add_command(label="Open file...", command=open_file)
 
 menu_file.add_separator()
-menu_file.add_command(label="Save all", command=lambda:save())
+menu_file.add_command(label="Save all", command=save_file)
 
 
 menu_file.add_separator()
@@ -43,10 +60,10 @@ scroll = Scrollbar(root)
 scroll.pack(side=RIGHT, fill=Y)
 
 # Text Widget
-eula = Text(root, wrap=NONE, yscrollcommand=scroll.set)
-eula.pack(side="left", fill=Y)
+txt = Text(root, yscrollcommand=scroll.set)
+txt.pack(side="left", fill="both", expand=True)
 
 # Configure the scrollbars
-scroll.config(command=eula.yview)
+scroll.config(command=txt.yview)
 root.config(menu=menu)
 root.mainloop()
