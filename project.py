@@ -1,4 +1,5 @@
 import tkinter.ttk as ttk
+import tkinter.messagebox as msgbox
 from tkinter import *
 from tkinter import filedialog
 
@@ -20,6 +21,26 @@ def del_file():
   for index in reversed(list_file.curselection()):
     list_file.delete(index)
 
+def browse_dest_path():
+  folder_selected = filedialog.askdirectory()
+  if folder_selected is None:
+    reutrn
+  txt_dest_path.delete(0, END)
+  txt_dest_path.insert(0, folder_selected)
+
+
+def start():
+  print("width :", cmb_width.get())
+  print("space :", cmb_space.get())
+  print("format :", cmb_format.get())
+
+  if list_file.size() == 0:
+    msgbox.showwarning("Warning", "Please add an image file")
+    return
+  
+  if len(txt_dest_path.get()) == 0:
+    msgbox.showwarning("Warning", "Choose a save path")
+    return
 
 btn_add_file = Button(file_frame, padx=5, pady=5, width=12, text="Add file", command=add_file)
 btn_add_file.pack(side="left")
@@ -29,7 +50,7 @@ btn_add_file.pack(side="right")
 #list frame
 list_frame= Frame(root)
 list_frame.pack(fill="both", padx=5, pady=5)
- 
+
 scrollbar = Scrollbar(list_frame)
 scrollbar.pack(side="right", fill="y")
 
@@ -39,12 +60,12 @@ scrollbar.config(command=list_file.yview)
 
 
 path_frame = LabelFrame(root, text="Save path")
-path_frame.pack(padx=5, pady=5, ipady=5)
+path_frame.pack(fill="both", padx=5, pady=5, ipady=5)
 
 txt_dest_path = Entry(path_frame)
 txt_dest_path.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4)
 
-btn_dest_path = Button(path_frame, text="Find", width=10)
+btn_dest_path = Button(path_frame, text="Find", width=10, command=browse_dest_path)
 btn_dest_path.pack(side="right", padx=5, pady=5)
 
 #Option frame
@@ -93,7 +114,7 @@ frame_run.pack(fill="x", padx=5, pady=5)
 btn_close = Button(frame_run, padx=5, pady=5, text="Close", width=12, command=root.quit)
 btn_close.pack(side="right", padx=5, pady=5)
 
-btn_start = Button(frame_run, padx=5, pady=5, text="Start", width=12)
+btn_start = Button(frame_run, padx=5, pady=5, text="Start", width=12, command=start)
 btn_start.pack(side="right", padx=5, pady=5)
 
 
