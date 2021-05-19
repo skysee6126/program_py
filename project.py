@@ -1,7 +1,9 @@
+import os
 import tkinter.ttk as ttk
 import tkinter.messagebox as msgbox
 from tkinter import *
 from tkinter import filedialog
+from PIL import Image
 
 root = Tk()
 root.title("GUI program")
@@ -9,6 +11,22 @@ root.title("GUI program")
 file_frame = Frame(root)
 file_frame.pack(fill="x", padx=5, pady=5)
 
+def merge_image():
+  #print(list_file.get(0,END))
+  images = [Image.open(x) for x in list_file.get(0,END)]
+  widths = [x.size[0] for x in images]
+  heights = [x.size[1] for x in images]
+
+  max_width, total_height = max(widths), sum(heights)
+  result_img = Image.new("RGB", (max_width, total_height), (255,255,255))
+  y_offset = 0
+  for img in images:
+    result_img.paste(img, (0,y_offset))
+    y_offset += img.size[1]
+  
+  dest_path = os.path.join(txt_dest_path.get(), "result.jpg")
+  result_img.save(dest_path)
+  msgbox.showinfo("Alert", "sucessfully complete!")
 
 def add_file():
   files = filedialog.askopenfilenames(title="choose image files", \
@@ -34,13 +52,18 @@ def start():
   print("space :", cmb_space.get())
   print("format :", cmb_format.get())
 
+  #Check file list
   if list_file.size() == 0:
     msgbox.showwarning("Warning", "Please add an image file")
     return
   
+  #Check save path
   if len(txt_dest_path.get()) == 0:
     msgbox.showwarning("Warning", "Choose a save path")
     return
+
+  #Image merge
+  merge_image()
 
 btn_add_file = Button(file_frame, padx=5, pady=5, width=12, text="Add file", command=add_file)
 btn_add_file.pack(side="left")
