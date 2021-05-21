@@ -14,8 +14,9 @@ file_frame.pack(fill="x", padx=5, pady=5)
 def merge_image():
   #print(list_file.get(0,END))
   images = [Image.open(x) for x in list_file.get(0,END)]
-  widths = [x.size[0] for x in images]
-  heights = [x.size[1] for x in images]
+  # widths = [x.size[0] for x in images]
+  # heights = [x.size[1] for x in images]
+  widths, heights = zip(*(x.size for x in images))
 
   max_width, total_height = max(widths), sum(heights)
   result_img = Image.new("RGB", (max_width, total_height), (255,255,255))
