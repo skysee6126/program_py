@@ -12,11 +12,37 @@ file_frame = Frame(root)
 file_frame.pack(fill="x", padx=5, pady=5)
 
 def merge_image():
+
+  img_width = cmb_width.get()
+  if img_width == "Original":
+    img_width = -1
+  else:
+    img_width = int(img_width)
+
+  img_space = cmb_space.get()
+  if img_space == "narrow":
+    img_space = 30
+  elif img_space == "normal":
+    img_space = 60  
+  elif img_space == "wide":
+    img_space = 90
+  else:
+    img_space = 0
+
+  img_format = cmb_format.get().lower()
+  
+
   #print(list_file.get(0,END))
   images = [Image.open(x) for x in list_file.get(0,END)]
-  # widths = [x.size[0] for x in images]
-  # heights = [x.size[1] for x in images]
-  widths, heights = zip(*(x.size for x in images))
+  
+  image_sizes = []
+  if img_width > -1:
+    image_sizes = [(int(img_width), int(img_width*x.size[1]/x.size[0])) for x in images]
+  else:
+    image_sizes = [(x.size[0], x.size[1]) for x in images]
+
+
+  widths, heights = zip(*(image_sizes))
 
   max_width, total_height = max(widths), sum(heights)
   result_img = Image.new("RGB", (max_width, total_height), (255,255,255))
@@ -57,9 +83,6 @@ def browse_dest_path():
 
 
 def start():
-  print("width :", cmb_width.get())
-  print("space :", cmb_space.get())
-  print("format :", cmb_format.get())
 
   #Check file list
   if list_file.size() == 0:
