@@ -84,7 +84,7 @@ def del_file():
 
 def browse_dest_path():
   folder_selected = filedialog.askdirectory()
-  if folder_selected is None:
+  if folder_selected is '':
     reutrn
   txt_dest_path.delete(0, END)
   txt_dest_path.insert(0, folder_selected)
