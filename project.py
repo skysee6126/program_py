@@ -12,83 +12,85 @@ file_frame = Frame(root)
 file_frame.pack(fill="x", padx=5, pady=5)
 
 def merge_image():
+  try:
+    img_width = cmb_width.get()
+    if img_width == "Original":
+      img_width = -1
+    else:
+      img_width = int(img_width)
 
-  img_width = cmb_width.get()
-  if img_width == "Original":
-    img_width = -1
-  else:
-    img_width = int(img_width)
+    img_space = cmb_space.get()
+    if img_space == "narrow":
+      img_space = 30
+    elif img_space == "normal":
+      img_space = 60  
+    elif img_space == "wide":
+      img_space = 90
+    else:
+      img_space = 0
 
-  img_space = cmb_space.get()
-  if img_space == "narrow":
-    img_space = 30
-  elif img_space == "normal":
-    img_space = 60  
-  elif img_space == "wide":
-    img_space = 90
-  else:
-    img_space = 0
+    img_format = cmb_format.get().lower()
+    
 
-  img_format = cmb_format.get().lower()
-  
-
-  #print(list_file.get(0,END))
-  images = [Image.open(x) for x in list_file.get(0,END)]
-  
-  image_sizes = []
-  if img_width > -1:
-    image_sizes = [(int(img_width), int(img_width*x.size[1]/x.size[0])) for x in images]
-  else:
-    image_sizes = [(x.size[0], x.size[1]) for x in images]
-
-
-  widths, heights = zip(*(image_sizes))
-
-  max_width, total_height = max(widths), sum(heights)
-
-  if img_space >0:
-    total_height += (img_space*(len(images) -1))
-
-  result_img = Image.new("RGB", (max_width, total_height), (255,255,255))
-  y_offset = 0
-  # for img in images:
-  #   result_img.paste(img, (0,y_offset))
-  #   y_offset += img.size[1]
-  
-  for idx, img in enumerate(images):
+    #print(list_file.get(0,END))
+    images = [Image.open(x) for x in list_file.get(0,END)]
+    
+    image_sizes = []
     if img_width > -1:
-      img = img.resize(image_sizes[idx])
+      image_sizes = [(int(img_width), int(img_width*x.size[1]/x.size[0])) for x in images]
+    else:
+      image_sizes = [(x.size[0], x.size[1]) for x in images]
 
-    result_img.paste(img, (0, y_offset))
-    y_offset += (img.size[1] + img_space)
 
-    progress = (idx +1)/len(images)*100
-    p_var.set(progress)
-    progress_bar.update()
+    widths, heights = zip(*(image_sizes))
 
-  file_name = "result." + img_format
-  dest_path = os.path.join(txt_dest_path.get(), file_name)
-  result_img.save(dest_path)
-  msgbox.showinfo("Alert", "sucessfully complete!")
+    max_width, total_height = max(widths), sum(heights)
 
-def add_file():
-  files = filedialog.askopenfilenames(title="choose image files", \
-    filetypes=(("PNG file", "*.png"), ("All files", "*.*")), \
-    initialdir="C:/")
-  for file in files:
-    list_file.insert(END, file)
+    if img_space >0:
+      total_height += (img_space*(len(images) -1))
 
-def del_file():
-  for index in reversed(list_file.curselection()):
-    list_file.delete(index)
+    result_img = Image.new("RGB", (max_width, total_height), (255,255,255))
+    y_offset = 0
+    # for img in images:
+    #   result_img.paste(img, (0,y_offset))
+    #   y_offset += img.size[1]
+    
+    for idx, img in enumerate(images):
+      if img_width > -1:
+        img = img.resize(image_sizes[idx])
 
-def browse_dest_path():
-  folder_selected = filedialog.askdirectory()
-  if folder_selected is '':
-    reutrn
-  txt_dest_path.delete(0, END)
-  txt_dest_path.insert(0, folder_selected)
+      result_img.paste(img, (0, y_offset))
+      y_offset += (img.size[1] + img_space)
 
+      progress = (idx +1)/len(images)*100
+      p_var.set(progress)
+      progress_bar.update()
+
+    file_name = "result." + img_format
+    dest_path = os.path.join(txt_dest_path.get(), file_name)
+    result_img.save(dest_path)
+    msgbox.showinfo("Alert", "sucessfully complete!")
+  except Exception as err:
+    msgbox.showerror("error", err)
+
+
+  def add_file():
+    files = filedialog.askopenfilenames(title="choose image files", \
+      filetypes=(("PNG file", "*.png"), ("All files", "*.*")), \
+      initialdir="C:/")
+    for file in files:
+      list_file.insert(END, file)
+
+  def del_file():
+    for index in reversed(list_file.curselection()):
+      list_file.delete(index)
+
+  def browse_dest_path():
+    folder_selected = filedialog.askdirectory()
+    if folder_selected is '':
+      reutrn
+    txt_dest_path.delete(0, END)
+    txt_dest_path.insert(0, folder_selected)
 
 def start():
 
