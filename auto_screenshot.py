@@ -1,8 +1,13 @@
 import time
 from PIL import ImageGrab
+import keyboard
 
-time.sleep(5)
-for i in range(1, 11):
+def screenshot():
+  curr_time = time.strftime("_%Y%m%d_%H%M%S")
   img = ImageGrab.grab()
-  img.save("image{}.png".format(i))
-  time.sleep(2)
+  img.save("image{}.png".format(curr_time))
+
+
+keyboard.add_hotkey("F9", screenshot)
+
+keyboard.wait("esc")
